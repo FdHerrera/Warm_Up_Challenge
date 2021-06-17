@@ -29,9 +29,14 @@ public class AppUserService implements UserDetailsService{
         return user;
     }
 
+    public AppUser findByEmail(String email){
+        return repo.findByEmail(email).orElseThrow(()-> new IllegalStateException("Hubo un error buscando éste email"));
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return repo.findByEmail(email)
                 .orElseThrow(()-> new IllegalStateException("No se encuentra registrado este email"));
     }
+
 }

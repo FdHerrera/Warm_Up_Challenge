@@ -1,6 +1,8 @@
 package com.alkemy.warmup.blog.controller;
 
 import com.alkemy.warmup.blog.model.Post;
+import com.alkemy.warmup.blog.model.PostRequest;
+import com.alkemy.warmup.blog.service.PostRequestService;
 import com.alkemy.warmup.blog.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService service;
+    private final PostRequestService requestService;
 
     @GetMapping
     public ResponseEntity<List<Post>> getAllPosts(){
@@ -41,8 +44,8 @@ public class PostController {
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<Post> addPost(@RequestBody Post post){
-        Post newPost = service.addPost(post);
+    public ResponseEntity<Post> addPost(@RequestBody PostRequest postRequest){
+        Post newPost = requestService.createNewPost(postRequest);
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 

@@ -31,20 +31,15 @@ public class Post implements Comparable<Post>{
     private String category;
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    @ManyToOne
-    @JoinColumn(
-            nullable = false,
-            name = "app_user_id"
-    )
-    private AppUser appUser;
+    private Long userId;
 
-    public Post(String title, String content, String urlImage, String category, LocalDateTime createdAt, AppUser appUser) {
+    public Post(String title, String content, String urlImage, String category, LocalDateTime createdAt, Long userId) {
         this.title = title;
         this.content = content;
         this.urlImage = urlImage;
         this.category = category;
         this.createdAt = createdAt;
-        this.appUser = appUser;
+        this.userId = userId;
     }
 
     @Override
