@@ -1,7 +1,8 @@
 package com.alkemy.warmup.blog.model;
 
-import com.alkemy.warmup.auth.model.AppUser;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE post SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 public class Post implements Comparable<Post>{
 
     @SequenceGenerator(
@@ -31,7 +34,10 @@ public class Post implements Comparable<Post>{
     private String category;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+    @Column(updatable = false)
     private Long userId;
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     public Post(String title, String content, String urlImage, String category, LocalDateTime createdAt, Long userId) {
         this.title = title;

@@ -1,5 +1,6 @@
 package com.alkemy.warmup.blog.service;
 
+import com.alkemy.warmup.auth.model.AppUser;
 import com.alkemy.warmup.auth.service.AppUserService;
 import com.alkemy.warmup.blog.model.Post;
 import com.alkemy.warmup.blog.model.PostRequest;
@@ -26,8 +27,12 @@ public class PostRequestService {
                 , postRequest.getUrlImage()
                 , postRequest.getCategory()
                 , LocalDateTime.now()
-                , userService.findByEmail(getCurrentUsername()).getId()
+                , currentUser().getId()
         ));
+    }
+
+    private AppUser currentUser(){
+        return userService.findByEmail(getCurrentUsername());
     }
 
     private String getCurrentUsername(){
