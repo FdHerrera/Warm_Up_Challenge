@@ -41,4 +41,8 @@ public class PostService {
             throw new Exception("No se pudo guardar el post, es posible que el id no exista");
         }
     }
+
+    public void deletePostById(Long id) {
+        repo.deleteById(id);
+    }
 }

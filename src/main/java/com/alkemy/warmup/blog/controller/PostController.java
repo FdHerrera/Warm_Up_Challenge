@@ -46,13 +46,19 @@ public class PostController {
     @PostMapping(path = "/add")
     public ResponseEntity<Post> addPost(@RequestBody PostRequest postRequest){
         Post newPost = requestService.createNewPost(postRequest);
-        return new ResponseEntity<>(newPost, HttpStatus.OK);
+        return new ResponseEntity<>(newPost, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/update")
     public ResponseEntity<Post> updatePost(@RequestBody Post post) throws Exception {
         Post updatedPost = service.updatePost(post);
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> deletePostByid(@PathVariable("id") Long id){
+        service.deletePostById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
