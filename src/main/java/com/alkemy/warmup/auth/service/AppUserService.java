@@ -1,6 +1,7 @@
 package com.alkemy.warmup.auth.service;
 
 import com.alkemy.warmup.auth.model.AppUser;
+import com.alkemy.warmup.auth.model.ConfirmationToken;
 import com.alkemy.warmup.auth.model.RegistrationRequest;
 import com.alkemy.warmup.repos.AppUserRepo;
 import lombok.AllArgsConstructor;
@@ -11,14 +12,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 
 @Service
 @AllArgsConstructor
 public class AppUserService implements UserDetailsService{
 
     private final AppUserRepo repo;
+    private final ConfirmationTokenService tokenService;
 
-    public AppUser signUpUser(AppUser user){
+    public String signUpUser(AppUser user){
         boolean userExists = repo.findByEmail(user.getEmail()).isPresent();
         if(userExists){
             throw new IllegalStateException("Éste email ya está registrado");
@@ -26,7 +31,15 @@ public class AppUserService implements UserDetailsService{
         String encodedPass = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(encodedPass);
         repo.save(user);
-        return user;
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken usersToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                user
+        );
+        tokenService.saveToken(usersToken);
+        return token;
     }
 
     public AppUser findByEmail(String email){
@@ -39,4 +52,7 @@ public class AppUserService implements UserDetailsService{
                 .orElseThrow(()-> new IllegalStateException("No se encuentra registrado este email"));
     }
 
+    public void enableAppUser(Long id) {
+        repo.enableUser(id);
+    }
 }
